@@ -1,0 +1,23 @@
+{
+  "name": "chatty",
+  "version": "1.0.0",
+  "description": "a websocket based chat",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/glptrst/chatty.git"
+  },
+  "author": "Giulio Pietroiusti",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/glptrst/chatty/issues"
+  },
+  "homepage": "https://github.com/glptrst/chatty#readme",
+  "dependencies": {
+    "ws": "^7.2.3"
+  }
+}
