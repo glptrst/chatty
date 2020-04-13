@@ -53,5 +53,19 @@ const server = http.createServer((req, res) => {
     }
   });
 
-}).listen(9898);
+}).listen(process.env.PORT || 9898);
 
+/*                  */
+/* WEBSOCKET SERVER */
+/*                  */
+const wss = new WebSocket.Server({ server });
+
+wss.on('connection', (ws) => {
+  ws.on('message', (req) => {
+    //TODO
+  });
+
+  ws.on('close', (e) => {
+    //TODO
+  });
+});

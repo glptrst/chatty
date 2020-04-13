@@ -1,0 +1,17 @@
+body {
+    background-color: black;
+}
+
+#usernameInput {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+}
+
+input {
+    color: #00c717;
+    background-color: black;
+    font-size: 250%;
+    border: 0;
+    outline: 0;
+}
