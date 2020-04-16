@@ -60,8 +60,13 @@ const server = http.createServer((req, res) => {
 /*                  */
 const wss = new WebSocket.Server({ server });
 
+let users = [];
+
 wss.on('connection', (ws) => {
+
   ws.on('message', (req) => {
+    req = JSON.parse(req);
+    console.log(req);
     //TODO
   });
 
