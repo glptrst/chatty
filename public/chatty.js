@@ -21,19 +21,30 @@
     }
   });
 
-  function startChat() {
-    body.appendChild(renderChat());
-    document.getElementById('messageInput').focus();
-
+  function startChat(username) {
     const HOST = location.origin.replace(/^http/, 'ws');
     const ws = new WebSocket(HOST);
 
     ws.onopen = () => {
       console.log('WebSocket Client Connected');
-      //TODO: send connection request (to add user)
+      ws.send(JSON.stringify({
+	type: 'joinChat',
+	username: username
+      }));
     };
     ws.onmessage = function(e) {
-      //TODO
+      let action = JSON.parse(e.data);
+
+      if (action.type === 'joinChat') {
+	body.appendChild(renderChat());
+	document.getElementById('messageInput').focus();
+      } else if (action.type === 'message') {
+	//console.log(action.content);
+	let li = document.createElement('li');
+	let liTxt = document.createTextNode(action.content);
+	li.appendChild(liTxt);
+	document.getElementById('messages').appendChild(li);
+      }
     };
 
     function renderChat() {
@@ -54,8 +65,9 @@
       form.addEventListener('submit', (e) => {
 	e.preventDefault();
 	ws.send(JSON.stringify({
+	  type: 'message',
 	  user: username,
-	  message: input.value
+	  content: input.value
 	}));
 	document.getElementById('messageInput').value = '';
 	document.getElementById('messageInput').focus();

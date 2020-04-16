@@ -67,7 +67,25 @@ wss.on('connection', (ws) => {
   ws.on('message', (req) => {
     req = JSON.parse(req);
     console.log(req);
-    //TODO
+
+    if (req.type === 'joinChat') {
+      // TODO check whether username satisfies certain conditions
+      // (length, etc.)
+      let user = {ws: ws, username: req.username};
+      users.push(user);
+
+      ws.send(JSON.stringify({
+	type: 'joinChat'
+      }));
+    } else if (req.type === 'message') {
+      // TODO conditions
+      users.forEach((u) => {
+	u.ws.send(JSON.stringify({
+	  type: 'message',
+	  content: req.content
+	}));
+      });
+    }
   });
 
   ws.on('close', (e) => {
