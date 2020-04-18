@@ -79,7 +79,7 @@ wss.on('connection', (ws) => {
       }));
     } else if (req.type === 'message') {
       // TODO conditions
-      users.forEach((u) => {
+      users.forEach((u) => { // send message to everyone
 	u.ws.send(JSON.stringify({
 	  type: 'message',
 	  content: req.content
@@ -89,6 +89,7 @@ wss.on('connection', (ws) => {
   });
 
   ws.on('close', (e) => {
-    //TODO
+    users = users.filter( (u) => !(u.ws === ws) ); // remove user from users
   });
+
 });
