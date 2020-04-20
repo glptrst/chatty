@@ -41,7 +41,7 @@
       } else if (action.type === 'message') {
 	//console.log(action.content);
 	let li = document.createElement('li');
-	let liTxt = document.createTextNode(action.content);
+	let liTxt = document.createTextNode(`<${action.username}> ${action.content}`);
 	li.appendChild(liTxt);
 	document.getElementById('messages').appendChild(li);
       }
@@ -66,7 +66,7 @@
 	e.preventDefault();
 	ws.send(JSON.stringify({
 	  type: 'message',
-	  user: username,
+	  username: username,
 	  content: input.value
 	}));
 	document.getElementById('messageInput').value = '';

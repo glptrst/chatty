@@ -68,9 +68,9 @@ wss.on('connection', (ws) => {
     console.log(req);
 
     if (req.type === 'joinChat') {
-      joinChat(ws);
+      joinChat(ws, req.username);
     } else if (req.type === 'message') {
-      message(req.content);
+      message(req.content, req.username);
     }
   });
 
@@ -79,10 +79,10 @@ wss.on('connection', (ws) => {
   });
 });
 
-function joinChat(ws) {
+function joinChat(ws, username) {
   // TODO check whether username satisfies certain conditions
   // (length, etc.)
-  let user = {ws: ws, username: req.username};
+  let user = {ws: ws, username: username};
   users.push(user);
   
   ws.send(JSON.stringify({
@@ -90,11 +90,12 @@ function joinChat(ws) {
   }));
 }
 
-function message(message) {
+function message(message, username) {
   // TODO conditions
   users.forEach((u) => { // send message to everyone
     u.ws.send(JSON.stringify({
       type: 'message',
+      username: username,
       content: message
     }));
   });
