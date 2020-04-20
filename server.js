@@ -14,9 +14,9 @@ const server = http.createServer((req, res) => {
   if (filePath === './')
     filePath = './index.html';
 
-  var extname = String(path.extname(filePath)).toLowerCase();
-  console.log(filePath);
-  var mimeTypes = {
+  let extname = String(path.extname(filePath)).toLowerCase();
+
+  let mimeTypes = {
     '.html': 'text/html',
     '.js': 'text/javascript',
     '.css': 'text/css',
@@ -34,7 +34,7 @@ const server = http.createServer((req, res) => {
     '.wasm': 'application/wasm'
   };
   
-  var contentType = mimeTypes[extname] || 'application/octet-stream';
+  let contentType = mimeTypes[extname] || 'application/octet-stream';
 
   fs.readFile('./public/' + filePath, (error, content) => {
     if (error) {
@@ -63,33 +63,43 @@ const wss = new WebSocket.Server({ server });
 let users = [];
 
 wss.on('connection', (ws) => {
-
   ws.on('message', (req) => {
     req = JSON.parse(req);
     console.log(req);
 
     if (req.type === 'joinChat') {
-      // TODO check whether username satisfies certain conditions
-      // (length, etc.)
-      let user = {ws: ws, username: req.username};
-      users.push(user);
-
-      ws.send(JSON.stringify({
-	type: 'joinChat'
-      }));
+      joinChat(ws);
     } else if (req.type === 'message') {
-      // TODO conditions
-      users.forEach((u) => { // send message to everyone
-	u.ws.send(JSON.stringify({
-	  type: 'message',
-	  content: req.content
-	}));
-      });
+      message(req.content);
     }
   });
 
   ws.on('close', (e) => {
-    users = users.filter( (u) => !(u.ws === ws) ); // remove user from users
+    disconnect(ws);
   });
-
 });
+
+function joinChat(ws) {
+  // TODO check whether username satisfies certain conditions
+  // (length, etc.)
+  let user = {ws: ws, username: req.username};
+  users.push(user);
+  
+  ws.send(JSON.stringify({
+    type: 'joinChat'
+  }));
+}
+
+function message(message) {
+  // TODO conditions
+  users.forEach((u) => { // send message to everyone
+    u.ws.send(JSON.stringify({
+      type: 'message',
+      content: message
+    }));
+  });
+}
+
+function disconnect(ws) {
+  users = users.filter( (u) => !(u.ws === ws) ); // remove user from users
+}
