@@ -44,6 +44,11 @@
 	let liTxt = document.createTextNode(`<${action.username}> ${action.content}`);
 	li.appendChild(liTxt);
 	document.getElementById('messages').appendChild(li);
+      } else if (action.type === 'usernameTaken') {
+	usernameInput.value = '';
+	usernameInput.placeholder = 'username taken';
+	usernameInput.style.display = '';
+	usernameInput.focus();
       }
     };
 

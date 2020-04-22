@@ -20,21 +20,9 @@ const server = http.createServer((req, res) => {
     '.html': 'text/html',
     '.js': 'text/javascript',
     '.css': 'text/css',
-    '.json': 'application/json',
-    '.png': 'image/png',
-    '.jpg': 'image/jpg',
-    '.gif': 'image/gif',
-    '.svg': 'image/svg+xml',
-    '.wav': 'audio/wav',
-    '.mp4': 'video/mp4',
-    '.woff': 'application/font-woff',
-    '.ttf': 'application/font-ttf',
-    '.eot': 'application/vnd.ms-fontobject',
-    '.otf': 'application/font-otf',
-    '.wasm': 'application/wasm'
   };
   
-  let contentType = mimeTypes[extname] || 'application/octet-stream';
+  let contentType = mimeTypes[extname];
 
   fs.readFile('./public/' + filePath, (error, content) => {
     if (error) {
@@ -68,8 +56,15 @@ wss.on('connection', (ws) => {
     console.log(req);
 
     if (req.type === 'joinChat') {
-      joinChat(ws, req.username);
+      if (usernameExists(req.username)) { //TODO: further conditions?
+	ws.send(JSON.stringify({
+	  type: 'usernameTaken'
+	}));
+      } else {
+	joinChat(ws, req.username);
+      }
     } else if (req.type === 'message') {
+      //TODO: conditions?
       message(req.content, req.username);
     }
   });
@@ -80,8 +75,6 @@ wss.on('connection', (ws) => {
 });
 
 function joinChat(ws, username) {
-  // TODO check whether username satisfies certain conditions
-  // (length, etc.)
   let user = {ws: ws, username: username};
   users.push(user);
   
@@ -91,7 +84,6 @@ function joinChat(ws, username) {
 }
 
 function message(message, username) {
-  // TODO conditions
   users.forEach((u) => { // send message to everyone
     u.ws.send(JSON.stringify({
       type: 'message',
@@ -103,4 +95,10 @@ function message(message, username) {
 
 function disconnect(ws) {
   users = users.filter( (u) => !(u.ws === ws) ); // remove user from users
+}
+
+function usernameExists(username) {
+  return users.filter((u) => {
+    return u.username === username;
+  })[0];
 }
