@@ -52,8 +52,14 @@ let users = [];
 
 wss.on('connection', (ws) => {
   ws.on('message', (req) => {
-    req = JSON.parse(req);
-    console.log(req);
+
+    try {
+      req = JSON.parse(req);
+      console.log(req);
+    } catch(e) {
+      console.log(e);
+      return;
+    }
 
     if (req.type === 'joinChat') {
       if (usernameExists(req.username)) { //TODO: further conditions?
